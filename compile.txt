@@ -1,0 +1,1 @@
+nuitka --standalone --follow-imports --assume-yes-for-downloads --remove-output --windows-icon-from-ico=assets/icon.ico --output-filename=Anomalyze.exe src/anomalyze/cli.py
