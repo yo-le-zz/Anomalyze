@@ -2,8 +2,15 @@ from __future__ import annotations
 
 import argparse
 
-from .config import AnomalyzeConfig
-from .engine import AnomalyzeEngine
+if __package__ in (None, ""):
+    # Allow direct execution: `python src/anomalyze/cli.py`
+    import sys
+    from pathlib import Path
+
+    sys.path.append(str(Path(__file__).resolve().parents[1]))
+    from anomalyze.config import AnomalyzeConfig
+else:
+    from .config import AnomalyzeConfig
 
 
 def parse_args() -> argparse.Namespace:
@@ -45,6 +52,13 @@ def main() -> None:
         baseline_min_samples=args.baseline_min_samples,
         z_threshold=args.z_threshold,
     )
+
+    # Lazy import to keep CLI importable even if runtime deps are missing.
+    if __package__ in (None, ""):
+        from anomalyze.engine import AnomalyzeEngine
+    else:
+        from .engine import AnomalyzeEngine
+
     AnomalyzeEngine(config).run(loops=args.loops)
 
 
